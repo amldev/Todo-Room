@@ -11,7 +11,7 @@ interface TaskDAO {
     @Query("SELECT * FROM task")
     fun getAll(): Flowable<List<Task>>
 
-    @Query("SELECT * FROM task WHERE completed = :arg0")
+    @Query("SELECT * FROM task WHERE completed LIKE :arg0")
     fun getTasksByCompletion(complete: Boolean): Flowable<List<Task>>
 
     @Insert
