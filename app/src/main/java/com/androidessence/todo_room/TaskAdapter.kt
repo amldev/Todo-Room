@@ -6,11 +6,13 @@ import android.view.View
 import android.view.ViewGroup
 import android.widget.CheckBox
 import android.widget.TextView
+import com.androidessence.todo_room.R.id.task_completed
 import io.reactivex.Observable
 import io.reactivex.ObservableEmitter
 import io.reactivex.ObservableOnSubscribe
 import io.reactivex.disposables.Disposable
 import io.reactivex.schedulers.Schedulers
+import kotlinx.android.synthetic.main.list_item_task.view.*
 import java.lang.ref.WeakReference
 
 /**
@@ -40,8 +42,6 @@ class TaskAdapter(tasks: List<Task> = ArrayList()) : RecyclerView.Adapter<TaskAd
 
     class TaskViewHolder(view: View?, taskAdapter: TaskAdapter) : RecyclerView.ViewHolder(view) {
         val adapter: WeakReference<TaskAdapter> = WeakReference(taskAdapter)
-        val descriptionTextView = view?.findViewById(R.id.task_description) as? TextView
-        val completedCheckBox = view?.findViewById(R.id.task_completed) as? CheckBox
 
         // https://stackoverflow.com/questions/44477568/calling-an-rxjava-single-in-kotlin-lambda
         private lateinit var emitter: ObservableEmitter<Task>
@@ -51,12 +51,12 @@ class TaskAdapter(tasks: List<Task> = ArrayList()) : RecyclerView.Adapter<TaskAd
                 .subscribe({ itemView.context.taskDao().update(it) })
 
         fun bindTask(task: Task) {
-            descriptionTextView?.text = task.description
-            completedCheckBox?.isChecked = task.completed
+            itemView.task_description?.text = task.description
+            itemView.task_completed?.isChecked = task.completed
 
-            completedCheckBox?.setOnCheckedChangeListener { _, isChecked ->
+            itemView.task_completed?.setOnCheckedChangeListener { _, isChecked ->
                 adapter.get()?.tasks?.get(adapterPosition)?.completed = isChecked
-                emitter.onNext(adapter.get()?.tasks?.get(adapterPosition))
+                emitter.onNext(adapter.get()?.tasks?.get(adapterPosition)!!)
             }
         }
     }
